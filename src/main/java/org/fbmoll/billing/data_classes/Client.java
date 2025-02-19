@@ -3,9 +3,9 @@ package org.fbmoll.billing.data_classes;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.fbmoll.billing.create_forms.CreateClientForm;
 import org.fbmoll.billing.resources.*;
 import org.fbmoll.billing.resources.Button;
+import org.fbmoll.billing.create_forms.CreateClientForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,7 +167,7 @@ public class Client {
                 ));
             }
         } catch (SQLException e) {
-            logger.info(String.format("Error al obtener clientes: %s", e.getMessage()));
+            logger.info("Error al obtener clientes: {}", e.getMessage());
         }
         return clients;
     }
@@ -325,7 +325,7 @@ public class Client {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            logger.info(String.format("Error al modificar clientes: %s", e.getMessage()));
+            logger.info("Error al modificar clientes: {}", e.getMessage());
         }
 
         SwingUtilities.invokeLater(() -> {

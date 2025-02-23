@@ -23,7 +23,6 @@ public class CreateClientForm extends JDialog {
     private final JTextField ibanField = new JTextField(20);
     private final JTextField riskField = new JTextField(10);
     private final JTextField discountField = new JTextField(10);
-    private final JTextField descriptionField = new JTextField(20);
 
     public CreateClientForm(JPanel parentPanel) {
         this.parentPanel = parentPanel;
@@ -59,8 +58,6 @@ public class CreateClientForm extends JDialog {
         formPanel.add(riskField);
         formPanel.add(new JLabel("Descuento:"));
         formPanel.add(discountField);
-        formPanel.add(new JLabel("Descripción:"));
-        formPanel.add(descriptionField);
 
         JButton saveButton = new JButton("Guardar");
         saveButton.addActionListener(e -> saveClient());
@@ -96,7 +93,6 @@ public class CreateClientForm extends JDialog {
             ps.setString(10, ibanField.getText());
             ps.setDouble(11, Double.parseDouble(riskField.getText()));
             ps.setDouble(12, Double.parseDouble(discountField.getText()));
-            ps.setString(13, descriptionField.getText());
 
             ps.executeUpdate();
             JOptionPane.showMessageDialog(this, "Cliente creado con éxito.");

@@ -4,6 +4,7 @@ import org.fbmoll.billing.data_classes.Worker;
 import org.fbmoll.billing.resources.Utils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,40 +30,34 @@ public class CreateWorkerForm extends JDialog {
     public CreateWorkerForm(JPanel parentPanel) {
         this.parentPanel = parentPanel;
         setTitle("Crear Trabajador");
-        setSize(400, 500);
+        setSize(800, 300);
         setLayout(new BorderLayout());
         setModal(true);
         setLocationRelativeTo(parentPanel);
 
-        // Load countries from the database into the combo box
         loadCountries();
 
-        // Use a GridLayout for a simple two-column form
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        formPanel.add(new JLabel("Nombre:"));
-        formPanel.add(nameField);
-        formPanel.add(new JLabel("Dirección:"));
-        formPanel.add(addressField);
-        formPanel.add(new JLabel("Código Postal:"));
-        formPanel.add(postCodeField);
-        formPanel.add(new JLabel("Ciudad:"));
-        formPanel.add(townField);
-        formPanel.add(new JLabel("Provincia:"));
-        formPanel.add(provinceField);
-        formPanel.add(new JLabel("País:"));
-        formPanel.add(countryCombo);
-        formPanel.add(new JLabel("DNI:"));
-        formPanel.add(dniField);
-        formPanel.add(new JLabel("Teléfono:"));
-        formPanel.add(phoneField);
-        formPanel.add(new JLabel("Email:"));
-        formPanel.add(emailField);
-        formPanel.add(new JLabel("Puesto:"));
-        formPanel.add(positionField);
-        formPanel.add(new JLabel("Salario:"));
-        formPanel.add(salaryField);
-        formPanel.add(new JLabel("Comisión %:"));
-        formPanel.add(commissionField);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        Object[][] rows = {
+                {"Nombre:", nameField, "Dirección:", addressField},
+                {"Ciudad:", townField, "Provincia:", provinceField},
+                {"País:", countryCombo, "Código Postal:", postCodeField},
+                {"DNI:", dniField, "Teléfono:", phoneField},
+                {"Email:", emailField, "Puesto:", positionField},
+                {"Salario:", salaryField, "Comisión %:", commissionField}
+        };
+
+        for (int row = 0; row < rows.length; row++) {
+            addLabelAndField(formPanel, gbc,
+                    (String) rows[row][0], (Component) rows[row][1],
+                    (String) rows[row][2], (Component) rows[row][3], row);
+        }
 
         JButton saveButton = new JButton("Guardar");
         saveButton.addActionListener(e -> saveWorker());
@@ -95,6 +90,24 @@ public class CreateWorkerForm extends JDialog {
             JOptionPane.showMessageDialog(this, "Error al cargar países: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String label1, Component comp1,
+                                  String label2, Component comp2, int row) {
+        gbc.gridy = row;
+
+        gbc.gridx = 0;
+        gbc.weightx = 0.5;
+        panel.add(new JLabel(label1), gbc);
+
+        gbc.gridx = 1;
+        panel.add(comp1, gbc);
+
+        gbc.gridx = 2;
+        panel.add(new JLabel(label2), gbc);
+
+        gbc.gridx = 3;
+        panel.add(comp2, gbc);
     }
 
     private void saveWorker() {

@@ -27,6 +27,7 @@ public class CreateItemForm extends JDialog {
     private final Map<String, Integer> providerMap = new HashMap<>();
 
     public CreateItemForm(JPanel parentPanel) {
+
         this.parentPanel = parentPanel;
         setTitle("Crear Artículo");
         setSize(800, 300);

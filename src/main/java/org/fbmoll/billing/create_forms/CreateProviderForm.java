@@ -38,11 +38,21 @@ public class CreateProviderForm extends JDialog {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.WEST;
-        addLabelAndField(formPanel, gbc, "Nombre:", nameField, "Dirección:", addressField, 0);
-        addLabelAndField(formPanel, gbc, "Ciudad:", townField, "Provincia:", provinceField, 1);
-        addLabelAndField(formPanel, gbc, "País:", countryCombo, "Código Postal:", postCodeField, 2);
-        addLabelAndField(formPanel, gbc, "CIF:", cifField, "Teléfono:", phoneField, 3);
-        addLabelAndField(formPanel, gbc, "Email:", emailField, "Web:", websiteField, 4);
+
+        Object[][] rows = {
+                {"Nombre:", nameField, "Dirección:", addressField},
+                {"Ciudad:", townField, "Provincia:", provinceField},
+                {"País:", countryCombo, "Código Postal:", postCodeField},
+                {"CIF:", cifField, "Teléfono:", phoneField},
+                {"Email:", emailField, "Web:", websiteField}
+        };
+
+        for (int row = 0; row < rows.length; row++) {
+            addLabelAndField(formPanel, gbc,
+                    (String) rows[row][0], (Component) rows[row][1],
+                    (String) rows[row][2], (Component) rows[row][3], row);
+        }
+
         JButton saveButton = new JButton("Guardar");
         saveButton.addActionListener(e -> saveProvider());
         JButton cancelButton = new JButton("Cancelar");
@@ -53,20 +63,6 @@ public class CreateProviderForm extends JDialog {
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         setVisible(true);
-    }
-
-    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String label1, Component comp1,
-                                  String label2, Component comp2, int row) {
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.weightx = 0.5;
-        panel.add(new JLabel(label1), gbc);
-        gbc.gridx = 1;
-        panel.add(comp1, gbc);
-        gbc.gridx = 2;
-        panel.add(new JLabel(label2), gbc);
-        gbc.gridx = 3;
-        panel.add(comp2, gbc);
     }
 
     private void loadCountries() {
@@ -81,6 +77,20 @@ public class CreateProviderForm extends JDialog {
             JOptionPane.showMessageDialog(this, "Error al cargar países: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String label1, Component comp1,
+                                  String label2, Component comp2, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.weightx = 0.5;
+        panel.add(new JLabel(label1), gbc);
+        gbc.gridx = 1;
+        panel.add(comp1, gbc);
+        gbc.gridx = 2;
+        panel.add(new JLabel(label2), gbc);
+        gbc.gridx = 3;
+        panel.add(comp2, gbc);
     }
 
     private void saveProvider() {

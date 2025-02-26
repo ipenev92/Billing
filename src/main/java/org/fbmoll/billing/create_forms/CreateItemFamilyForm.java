@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class CreateItemFamilyForm extends JDialog {
     private final JPanel parentPanel;
-    private final JTextField codeField = new JTextField(20);
+    private final JTextField codeField = new JTextField(6);
     private final JTextField descriptionField = new JTextField(20);
 
     public CreateItemFamilyForm(JPanel parentPanel) {
@@ -22,12 +22,15 @@ public class CreateItemFamilyForm extends JDialog {
         setModal(true);
         setLocationRelativeTo(parentPanel);
 
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        formPanel.add(new JLabel("Código:"));
-        formPanel.add(codeField);
-        formPanel.add(new JLabel("Descripción:"));
-        formPanel.add(descriptionField);
+        int y = 0;
+        addLabelAndField(formPanel, gbc, "Código:", codeField, y++);
+        addLabelAndField(formPanel, gbc, "Descripción:", descriptionField, y);
 
         JButton saveButton = new JButton("Guardar");
         saveButton.addActionListener(e -> saveItemFamily());
@@ -45,10 +48,20 @@ public class CreateItemFamilyForm extends JDialog {
         setVisible(true);
     }
 
+    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String label1, JTextField field1, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.weightx = 0.5;
+        panel.add(new JLabel(label1), gbc);
+
+        gbc.gridx = 1;
+        panel.add(field1, gbc);
+    }
+
     private void saveItemFamily() {
         try (Connection conn = Utils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO familiaarticulos (codigoFamiliaArticulos, denominacionFamilias) VALUES (?, ?)")) {
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO familiaarticulos (codigoFamiliaArticulos," +
+                     " denominacionFamilias) VALUES (?, ?)")) {
 
             ps.setString(1, codeField.getText());
             ps.setString(2, descriptionField.getText());
@@ -58,8 +71,8 @@ public class CreateItemFamilyForm extends JDialog {
             dispose();
             ItemFamily.showItemFamilyTable(parentPanel, e -> {});
         } catch (SQLException | NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error al crear familia de artículos: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al crear: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
